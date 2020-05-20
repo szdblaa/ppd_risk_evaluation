@@ -22,44 +22,56 @@
   
 数据信息
 ==
-Master(每一行代表一个成功成交借款样本，每个样本包含200多个各类字段。
+Master(每一行代表一个成功成交借款样本，每个样本包含200多个各类字段)
 --
 
   idx：每笔贷款的unique key，可与另外2个文件里的idx相匹配。
+  
   UserInfo_*：借款人特征字段
+  
   WeblogInfo_*：Info网络行为字段
+  
   Education_Info*：学历学籍字段
+  
   ThirdParty_Info_PeriodN_*：第三方数据时间段N字段
+  
   SocialNetwork_*：社交网络字段
+  
   LinstingInfo：借款成交时间
-  Target：违约标签（1 = 贷款违约，0 = 正常还款）。测试集里 不包含target字段。
+  
+  Target：违约标签（1 = 贷款违约，0 = 正常还款）。测试集里不包含target字段。
   
 Log_Info（借款人的登陆信息）
 --
   ListingInfo：借款成交时间
+  
   LogInfo1：操作代码
+  
   LogInfo2：操作类别
+  
   LogInfo3：登陆时间
+  
   idx：每一笔贷款的unique key
   
 Userupdate_Info（借款⼈修改信息）
 --
   ListingInfo1：借款成交时间
+  
   UserupdateInfo1：修改内容
+  
   UserupdateInfo2：修改时间
+  
   idx：每⼀笔贷款的unique key
   
 案例分析思路
 ==
-1.数据清洗 对缺失值的多维度的处理 对离群点的剔除方法 文本处理 
+1.数据清洗 对缺失值的多维度的处理 剔除常变量 文本处理 
 
 2.特征工程 地理位置信息处理 成交时间 类别编码 组合特征 
 
 3.特征选择 Xgboost重要度排序 
 
-4.类别不平衡处理 代价敏感学习与过采样 
-
-5.模型设计与优化
+4.建模与调优 
 
 第一部分数据清洗
 ==
@@ -123,16 +135,21 @@ third_party_info1_1_mean表示在peiod1的值除以period1~7的均值,这是为�
 --
 类似的从登录信息表里提取了用户的登录信息特征,比如登录天数,平均登录间隔,以及每一种操作代码次数等等特征。
 
-特征选择
---
+第三部分特征选择
+==
 Pearson相关检验,剔除相关性系数大于0.99的特征.当然也可以再次利用xgboost输出特征的重要性,据此可以保留 TopN个特征，从而达到特征选择的目的。
 
 
-建模与调参
+第四部分建模与调参
 ==
 Logistic regression + L1正则化
+
 randomforest
+
 Xgboost 
+
 调参主要针对Xgboost进行：
+  
   1.首先利用xgb.cv获得最优n_estimators
+  
   2.利用GridSearchCV调整max_depth和min_child_weight
