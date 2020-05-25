@@ -142,7 +142,7 @@ Pearson相关检验,剔除相关性系数大于0.99的特征.当然也可以再�
 
 第四部分建模与调参
 ==
-Logistic regression + L1正则化
+GBDT
 
 randomforest
 
